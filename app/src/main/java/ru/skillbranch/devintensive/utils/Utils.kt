@@ -1,4 +1,4 @@
-package ru_skil.dev.utils
+package ru.skillbranch.devintensive.utils
 
 object Utils {
     fun perseFullName(fullName:String?):Pair<String?, String?>{

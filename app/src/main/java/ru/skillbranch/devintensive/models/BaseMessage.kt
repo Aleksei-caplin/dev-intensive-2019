@@ -1,4 +1,4 @@
-package ru_skil.dev.models
+package ru.skillbranch.devintensive.models
 
 import java.util.*
 

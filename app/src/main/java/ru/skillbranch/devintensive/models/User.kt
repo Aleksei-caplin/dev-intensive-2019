@@ -1,6 +1,6 @@
-package ru_skil.dev.models
+package ru.skillbranch.devintensive.models
 
-import ru_skil.dev.utils.Utils
+import ru.skillbranch.devintensive.utils.Utils
 import java.util.*
 
 data class User(

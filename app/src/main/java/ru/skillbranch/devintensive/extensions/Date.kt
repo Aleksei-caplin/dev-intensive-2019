@@ -1,4 +1,4 @@
-package ru_skil.dev.extensions
+package ru.skillbranch.devintensive.extensions
 
 import java.text.SimpleDateFormat
 import java.util.*
