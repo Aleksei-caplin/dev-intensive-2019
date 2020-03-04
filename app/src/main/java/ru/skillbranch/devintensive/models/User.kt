@@ -59,7 +59,7 @@ data class User(
             //val firstName = parts?.getOrNull(0)
             //val lastName = parts?.getOrNull(1)
 
-            val (firstName, lastName) = Utils.perseFullName(fullName)
+            val (firstName, lastName) = Utils.parseFullName(fullName)
 
             return User(id="$lastId", firstName = firstName, lastName = lastName)
         }
