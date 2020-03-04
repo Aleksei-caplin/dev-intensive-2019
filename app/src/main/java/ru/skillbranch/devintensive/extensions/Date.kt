@@ -13,21 +13,21 @@ fun Date.format(pattern:String="HH:mm:ss dd.MM.yy"):String {
     return dateFormat.format(this)
 }
 
-fun Date.add(value: Int, units: TimeUtils = TimeUtils.SECOND): Date{
+fun Date.add(value: Int, units: TimeUnits = TimeUnits.SECOND): Date{
     var time = this.time
 
     time += when(units){
-        TimeUtils.SECOND -> value * SECOND
-        TimeUtils.MINUTE -> value * MINUTE
-        TimeUtils.HOUR -> value * HOUR
-        TimeUtils.DAY -> value * DAY
+        TimeUnits.SECOND -> value * SECOND
+        TimeUnits.MINUTE -> value * MINUTE
+        TimeUnits.HOUR -> value * HOUR
+        TimeUnits.DAY -> value * DAY
 
     }
     this.time = time
     return this
 }
 
-enum class TimeUtils{
+enum class TimeUnits{
     SECOND,
     MINUTE,
     HOUR,
