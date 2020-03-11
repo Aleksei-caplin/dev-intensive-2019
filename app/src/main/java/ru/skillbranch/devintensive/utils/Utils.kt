@@ -1,7 +1,9 @@
 package ru.skillbranch.devintensive.utils
 
+import java.util.*
+
 object Utils {
-    fun parseFullName(fullName:String?):Pair<String?, String?>{
+    fun parseFullName(fullName:String?):Pair<String?, String?> {
         val list: List<String> = fullName?.split(" ")?:listOf()
         if(list.isEmpty())
             return null to null
@@ -18,9 +20,46 @@ object Utils {
     }
 
     fun transliteration(payload:String, divider: String = " "): String {
-        //TODO ("not implement")
-
-        return "123"
+        var state = ""
+        for(i in payload.toLowerCase()) {
+            state += when(i.toString().toLowerCase(Locale.getDefault())) {
+                "а" -> "a"
+                "б" -> "b"
+                "в" -> "v"
+                "г" -> "g"
+                "д" -> "d"
+                "е" -> "e"
+                "ё" -> "e"
+                "ж" -> "zh"
+                "з" -> "z"
+                "и" -> "i"
+                "й" -> "i"
+                "к" -> "k"
+                "л" -> "l"
+                "м" -> "m"
+                "н" -> "n"
+                "о" -> "o"
+                "п" -> "p"
+                "р" -> "r"
+                "с" -> "s"
+                "т" -> "t"
+                "у" -> "u"
+                "ф" -> "f"
+                "х" -> "h"
+                "ц" -> "c"
+                "ч" -> "ch"
+                "ш" -> "sh"
+                "щ" -> "sh"
+                "ъ" -> ""
+                "ы" -> "i"
+                "ь" -> ""
+                "э" -> "e"
+                "ю" -> "yu"
+                "я" -> "ya"
+                else -> i
+            }
+        }
+        return state.split(" ").joinToString(separator = divider) { it.capitalize() }
     }
 
     fun toInitials(firstName:String?, lastName: String?): String? {
@@ -30,4 +69,6 @@ object Utils {
         else if (!firstName.isNullOrBlank() && lastName.isNullOrBlank()) firstName[0].toString().toUpperCase()
         else null
     }
+
+
 }
