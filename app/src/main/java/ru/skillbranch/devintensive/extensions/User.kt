@@ -19,9 +19,3 @@ fun User.toUserView():UserView{
                     status = status
     )
 }
-
-//fun Date.humanizeDiff(date:Date = Date()):String {
-//    //TODO "not implementer"
-//
-//    return ""
-//}
