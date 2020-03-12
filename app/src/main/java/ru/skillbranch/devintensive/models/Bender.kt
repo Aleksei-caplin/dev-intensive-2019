@@ -14,10 +14,10 @@ class Bender(var status:Status = Status.NORMAL, var question:Question = Question
     fun listenAnswer(answer:String): Pair<String, Triple<Int, Int, Int>> {
         return if(question.answers.contains(answer)) {
             question = question.nextQuestion()
-            "Отлично - это правильно!\n${question.question}" to status.color
+            "Отлично - ты справился\n${question.question}" to status.color
         }else{
             status = status.nextStatus()
-            "Это не правильный ответ!\n${question.question}" to status.color
+            "Это неправильный ответ\n${question.question}" to status.color
         }
     }
 
@@ -53,7 +53,7 @@ class Bender(var status:Status = Status.NORMAL, var question:Question = Question
         SERIAL("Мой серийный номер", listOf("2145698")) {
             override fun nextQuestion(): Question = IDLE
         },
-        IDLE("На этом все, вопросов боьше нет", listOf()) {
+        IDLE("Отлично - ты справился\nНа этом все, вопросов больше нет", listOf()) {
             override fun nextQuestion(): Question = IDLE
         };
 
