@@ -9,8 +9,8 @@
         <item name="colorAccent">@color/color_accent</item>
 
         <item name="colorAccentSurface">@color/color_primary_light</item>
-        <item name="colorDivider">@color/color_gray</item>
-        <item name="colorAccentSurface">@color/color_divider_dark</item>
+        <item name="colorIcon">@color/color_divider_light</item>
+        <item name="colorDivider">@color/color_divider_dark</item>
     </style>
 
 </resources>
