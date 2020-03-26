@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.util.Log
 import android.widget.ImageView
 
 class AvatarImageView @JvmOverloads constructor(
@@ -29,6 +30,20 @@ class AvatarImageView @JvmOverloads constructor(
         "#A695E7",
         "#EE7AAE"
     )
+
+    fun setInitials(initials: String) {
+        Log.e("AvatarImageView", "setInitials")
+
+        var init: String = initials
+
+        if (initials == "")
+            init = "??"
+
+        this.initials = init
+
+        invalidate()
+
+    }
 
 
 }

@@ -1,5 +1,7 @@
 package ru.skillbranch.devintensive.models
 
+import ru.skillbranch.devintensive.models.data.Chat
+import ru.skillbranch.devintensive.models.data.User
 import java.util.*
 
 abstract class BaseMessage(
@@ -14,7 +16,7 @@ abstract class BaseMessage(
 
     companion object AbstractFactory{
         var lastId = -1
-        fun makeMessage(from:User?, chat:Chat, date:Date = Date(), type:String="text", payload:Any?):BaseMessage{
+        fun makeMessage(from: User?, chat: Chat, date:Date = Date(), type:String="text", payload:Any?):BaseMessage{
             lastId++
             return  when(type) {
                 "image" -> ImageMessage("$lastId", from, chat, date=date, image = payload as String)
