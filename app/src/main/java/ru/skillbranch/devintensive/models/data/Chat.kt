@@ -8,7 +8,7 @@ import java.util.*
 data class Chat(
     val id: String,
     val title: String,
-    val members: MutableList<User> = mutableListOf(),
+    val members: List<User> = listOf(),
     var messages: MutableList<BaseMessage> = mutableListOf(),
     val isArchived: Boolean = false
 ) {
