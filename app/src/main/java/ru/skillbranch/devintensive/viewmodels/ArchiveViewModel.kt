@@ -45,9 +45,10 @@ class ArchiveViewModel : ViewModel() {
     }
 
     fun restoreFromArchive(chatId: String) {
-        val chat = chatRepository.find(chatId)
+        /*val chat = chatRepository.find(chatId)
         chat ?: return
-        chatRepository.update(chat.copy(isArchived = false))
+        chatRepository.update(chat.copy(isArchived = false))*/
+
     }
 
     fun handleSearchQuery(text: String?) {
