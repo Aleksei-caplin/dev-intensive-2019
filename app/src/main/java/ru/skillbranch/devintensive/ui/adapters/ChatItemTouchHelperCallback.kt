@@ -11,8 +11,9 @@ import ru.skillbranch.devintensive.R
 import ru.skillbranch.devintensive.models.data.ChatItem
 
 class ChatItemTouchHelperCallback(
-    val adapter: ChatAdapter,
-    val swipeListener: (ChatItem)->Unit
+    private val adapter: ChatAdapter,
+    private val isArchive: Boolean,
+    private val swipeListener: (ChatItem) -> Unit
 ): ItemTouchHelper.Callback() {
 
     private val bgRect = RectF()

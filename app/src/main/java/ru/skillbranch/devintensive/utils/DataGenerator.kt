@@ -372,7 +372,7 @@ object DataGenerator {
             val singleChat = Chat(
                 "${list.size}",
                 "",
-                listOf(user) as MutableList<User>
+                listOf(user)
             )
             singleChat.messages = generateRandomMessages(singleChat, listOf(user))
             list.add(singleChat)
@@ -383,7 +383,7 @@ object DataGenerator {
             val groupChat = Chat(
                 "${list.size}",
                 members.map { it.firstName }.joinToString(", "),
-                members as MutableList<User>
+                members
             )
             groupChat.messages = generateRandomMessages(groupChat, members)
             list.add(groupChat)
@@ -398,7 +398,7 @@ object DataGenerator {
             val singleChat = Chat(
                 "${list.size}",
                 "",
-                listOf(user) as MutableList<User>
+                listOf(user)
             )
             singleChat.messages = generateRandomMessages(singleChat, listOf(user))
             list.add(singleChat)
@@ -406,10 +406,10 @@ object DataGenerator {
         if (hasGroups) {
             for (i in 0..count) {
                 val members = users.randomSublist(5, 2)
-                var groupChat = Chat(
+                val groupChat = Chat(
                     "${list.size}",
                     "Группа ${list.size}",
-                    members as MutableList<User>
+                    members
                 )
                 groupChat.messages = generateRandomMessages(groupChat, members)
                 list.add(groupChat)
@@ -426,7 +426,7 @@ object DataGenerator {
             val singleChat = Chat(
                 "${startId + list.size}",
                 "",
-                listOf(user) as MutableList<User>
+                listOf(user)
             )
             singleChat.messages = generateRandomMessages(singleChat, listOf(user))
             list.add(singleChat)
@@ -446,6 +446,7 @@ object DataGenerator {
                     chat,
                     true,
                     user.lastVisit ?: Date(),
+                    false,
                     randomTextPayload()
                 )
             )
@@ -456,7 +457,7 @@ object DataGenerator {
     private fun randomTextPayload(): String {
         val lorem =
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam vel nulla lectus. Phasellus et ullamcorper quam. Nunc sollicitudin viverra lacus. Mauris pellentesque sodales gravida. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Proin lacinia magna erat, in elementum leo laoreet a. Curabitur eleifend sapien ut augue dapibus, et luctus nisi aliquam. Pellentesque iaculis aliquam dolor. In accumsan ex non ante vulputate, id bibendum elit congue. Ut eget dictum nibh. Vestibulum accumsan interdum velit et volutpat. Aliquam nec consequat nibh. Vivamus et dignissim arcu, eget elementum lacus. Aliquam id metus quis velit aliquet elementum at non ligula. Vivamus non pulvinar ligula, ac dignissim leo.Donec gravida nunc quis ex cursus, sit amet fringilla arcu varius. Cras porta id nunc nec pretium. Mauris aliquet dolor non arcu rutrum, in pretium magna vestibulum. Phasellus venenatis odio sit amet dictum pellentesque. Duis sed augue vestibulum, pulvinar arcu vel, bibendum mauris. Aenean congue eleifend magna in suscipit. Donec a tellus in tellus pellentesque sollicitudin. Fusce aliquam lacus sit amet neque sollicitudin semper.Aliquam faucibus tristique tempor. Maecenas non purus a dolor sodales tempus. Praesent nec nibh in orci volutpat malesuada a sed ligula. Quisque tempus ipsum ex, eget vehicula urna tincidunt a. Maecenas maximus vel nibh id luctus. Vivamus condimentum velit vitae ante pellentesque, quis fringilla velit vestibulum. Curabitur at malesuada augue. Ut sapien enim, lobortis sed quam ut, hendrerit euismod metus. Ut vel lectus eget ante tempor blandit. In vitae nisi eu dolor consectetur elementum nec id purus.".split(
-                "."
+                ". "
             )
 
         val phrasesCount = (1..3).random()
