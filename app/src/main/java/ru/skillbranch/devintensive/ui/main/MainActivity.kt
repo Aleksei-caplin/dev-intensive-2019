@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
         initToolbar()
         initViews()
         initViewModel()
-        restoreFromArchive()
     }
 
     private fun initToolbar() {
@@ -67,10 +66,6 @@ class MainActivity : AppCompatActivity() {
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         viewModel.getChatData().observe(this, Observer { chatAdapter.updateData(it) })
-    }
-
-    fun restoreFromArchive() {
-        return true
     }
 
 
