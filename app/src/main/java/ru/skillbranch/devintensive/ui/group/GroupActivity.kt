@@ -54,7 +54,7 @@ class GroupActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if(item?.itemId == android.R.id.home) {
+        return if(item.itemId == android.R.id.home) {
             finish()
             overridePendingTransition(R.anim.idle, R.anim.bottom_down)
             true
@@ -77,7 +77,7 @@ class GroupActivity : AppCompatActivity() {
             addItemDecoration(divider)
         }
 
-        fab1.setOnClickListener{
+        fab.setOnClickListener{
             viewModel.handleCreateGroup()
             finish()
             overridePendingTransition(R.anim.idle, R.anim.bottom_down)
@@ -96,8 +96,8 @@ class GroupActivity : AppCompatActivity() {
     }
 
     private fun toggleFab(isShow: Boolean) {
-        if(isShow) fab1.show()
-        else fab1.hide()
+        if(isShow) fab.show()
+        else fab.hide()
     }
 
     private fun addChipToGroup(user: UserItem) {
