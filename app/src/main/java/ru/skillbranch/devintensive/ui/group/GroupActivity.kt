@@ -77,7 +77,7 @@ class GroupActivity : AppCompatActivity() {
             addItemDecoration(divider)
         }
 
-        fab.setOnClickListener{
+        fab1.setOnClickListener{
             viewModel.handleCreateGroup()
             finish()
             overridePendingTransition(R.anim.idle, R.anim.bottom_down)
@@ -96,8 +96,8 @@ class GroupActivity : AppCompatActivity() {
     }
 
     private fun toggleFab(isShow: Boolean) {
-        if(isShow) fab.show()
-        else fab.hide()
+        if(isShow) fab1.show()
+        else fab1.hide()
     }
 
     private fun addChipToGroup(user: UserItem) {
