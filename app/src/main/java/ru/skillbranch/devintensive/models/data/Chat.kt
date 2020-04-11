@@ -15,9 +15,28 @@ data class Chat(
     var messages: MutableList<BaseMessage> = mutableListOf(),
     var isArchived: Boolean = false
 ) {
+    companion object {
+        fun createArchiveChat(chats: List<Chat>): ChatItem {
+            val lastChat = chats.sortedBy { it.lastMessageDate() }.last()
+
+            return ChatItem(
+                "-1",
+                null,
+                "",
+                "Архив чатов",
+                lastChat.lastMessageShort().first,
+                chats.sumBy { it.unreadableMessageCount() },
+                lastChat.lastMessageDate()?.shortFormat(),
+                false,
+                ChatType.ARCHIVE,
+                lastChat.lastMessageShort().second
+            )
+        }
+    }
+
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun unreadableMessageCount(): Int {
-        return messages.filter { !it.isReaded }.size
+        return messages.count { !it.isReaded }
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -26,18 +45,17 @@ data class Chat(
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun lastMessageShort(): Pair<String?, String?> =
-        when (val lastMessage = messages.lastOrNull()) {
-            is TextMessage -> lastMessage.text to "${lastMessage.from.firstName}"
-            is ImageMessage -> "${lastMessage.from.firstName} - отправил фото" to "${lastMessage.from.firstName}"
-            else -> "Сообщений еще нет" to ""
-        }
+    fun lastMessageShort(): Pair<String?, String?> = when (val lastMessage = messages.lastOrNull()) {
+        is TextMessage -> lastMessage.text to "${lastMessage.from?.firstName}"
+        is ImageMessage -> "${lastMessage.from?.firstName} - отправил фото" to "${lastMessage.from?.firstName}"
+        else -> "Сообщений ещё нет" to ""
+    }
 
     private fun isSingle(): Boolean = members.size == 1
 
     fun toChatItem(): ChatItem {
-        val user = members.first()
         return if (isSingle()) {
+            val user = members.first()
             ChatItem(
                 id,
                 user.avatar,
@@ -52,7 +70,7 @@ data class Chat(
             ChatItem(
                 id,
                 null,
-                Utils.toInitials(user.firstName, null) ?: "??",
+                "",
                 title,
                 lastMessageShort().first,
                 unreadableMessageCount(),
@@ -70,3 +88,4 @@ enum class ChatType {
     GROUP,
     ARCHIVE
 }
+
