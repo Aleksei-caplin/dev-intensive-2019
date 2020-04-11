@@ -13,12 +13,13 @@ data class Chat(
     val title: String,
     val members: List<User> = listOf(),
     var messages: MutableList<BaseMessage> = mutableListOf(),
-    val isArchived: Boolean = false
+    var isArchived: Boolean = false
 ) {
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun unreadableMessageCount(): Int {
         return messages.filter { !it.isReaded }.size
     }
+
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun lastMessageDate(): Date? {
         return messages.lastOrNull()?.date
@@ -32,27 +33,26 @@ data class Chat(
             else -> "Сообщений еще нет" to ""
         }
 
-
     private fun isSingle(): Boolean = members.size == 1
 
     fun toChatItem(): ChatItem {
-        return if(isSingle()) {
-            val user = members.first()
+        val user = members.first()
+        return if (isSingle()) {
             ChatItem(
                 id,
                 user.avatar,
                 Utils.toInitials(user.firstName, user.lastName) ?: "??",
-                "${user.firstName?:""} ${user.lastName?:""}",
+                "${user.firstName ?: ""} ${user.lastName ?: ""}",
                 lastMessageShort().first,
                 unreadableMessageCount(),
                 lastMessageDate()?.shortFormat(),
                 user.isOnline
             )
-        }else{
+        } else {
             ChatItem(
                 id,
                 null,
-                "",
+                Utils.toInitials(user.firstName, null) ?: "??",
                 title,
                 lastMessageShort().first,
                 unreadableMessageCount(),
