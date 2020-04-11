@@ -68,4 +68,12 @@
         <item name="android:minHeight">72dp</item>
     </style>
 
+    <style name="Profile.EditText" parent="Profile">
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:enabled">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:focusable">false</item>
+    </style>
+
 </resources>

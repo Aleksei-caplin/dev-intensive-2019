@@ -1,6 +1,5 @@
 package ru.skillbranch.devintensive.ui.group
 
-
 import android.content.res.ColorStateList
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
