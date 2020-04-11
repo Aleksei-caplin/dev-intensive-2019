@@ -7,4 +7,7 @@
     <string name="profile_hint_name">Фамилия</string>
     <string name="profile_hint_first_name">Имя</string>
     <string name="menu_search_title">Поиск</string>
+    <string name="main_activity_title">Dev-intensive Chat</string>
+    <string name="group_activity_title">Создание группы</string>
+    <string name="archive_activity_title">Архив чатов</string>
 </resources>

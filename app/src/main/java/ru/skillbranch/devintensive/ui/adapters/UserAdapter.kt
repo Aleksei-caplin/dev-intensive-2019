@@ -11,39 +11,40 @@ import kotlinx.android.synthetic.main.item_user_list.*
 import ru.skillbranch.devintensive.R
 import ru.skillbranch.devintensive.models.data.UserItem
 
-class UserAdapter(
-    private val listener: (UserItem) -> Unit
-) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
-    var items = listOf<UserItem>()
+class UserAdapter(val listener: (UserItem) -> Unit) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+    var items: List<UserItem> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_user_list, parent, false)
-        return UserViewHolder(view)
+        val inflater = LayoutInflater.from(parent.context)
+        val convertView = inflater.inflate(R.layout.item_user_list, parent, false)
+        return UserViewHolder(convertView)
     }
 
     override fun getItemCount(): Int = items.size
-    override fun onBindViewHolder(holder: UserViewHolder, position: Int) =
-        holder.bind(items[position], listener)
+
+    override fun onBindViewHolder(holder: UserViewHolder, position: Int) = holder.bind(items[position], listener)
 
     fun updateData(data: List<UserItem>) {
-        val diffCallBack = object : DiffUtil.Callback() {
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                items[oldItemPosition].id == data[newItemPosition].id
-
-            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                items[oldItemPosition] == data[newItemPosition]
+        val diffCallback = object : DiffUtil.Callback() {
+            override fun areItemsTheSame(oldPos: Int, newPos: Int): Boolean = items[oldPos].id == data[newPos].id
 
             override fun getOldListSize(): Int = items.size
+
             override fun getNewListSize(): Int = data.size
+
+            override fun areContentsTheSame(oldPos: Int, newPos: Int): Boolean =
+                items[oldPos].hashCode() == data[newPos].hashCode()
         }
-        val diffResult = DiffUtil.calculateDiff(diffCallBack)
+
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+
         items = data
+
+        /* Передача текущего адаптера для обновления его с конкретной позиции */
         diffResult.dispatchUpdatesTo(this)
     }
 
-    inner class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-        LayoutContainer {
+    inner class UserViewHolder(convertView: View) : RecyclerView.ViewHolder(convertView), LayoutContainer {
         override val containerView: View?
             get() = itemView
 
@@ -56,6 +57,7 @@ class UserAdapter(
                 Glide.with(itemView).clear(iv_avatar_user)
                 iv_avatar_user.setInitials(user.initials ?: "??")
             }
+
             sv_indicator.visibility = if (user.isOnline) View.VISIBLE else View.GONE
             tv_user_name.text = user.fullName
             tv_last_activity.text = user.lastActivity
@@ -63,5 +65,4 @@ class UserAdapter(
             itemView.setOnClickListener { listener.invoke(user) }
         }
     }
-
 }

@@ -1,5 +1,8 @@
 package ru.skillbranch.devintensive.ui.adapters
 
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,22 +13,19 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_chat_archive.*
 import kotlinx.android.synthetic.main.item_chat_group.*
 import kotlinx.android.synthetic.main.item_chat_single.*
-import kotlinx.android.synthetic.main.item_chat_single.sv_indicator
 import ru.skillbranch.devintensive.R
 import ru.skillbranch.devintensive.models.data.ChatItem
 import ru.skillbranch.devintensive.models.data.ChatType
-import ru.skillbranch.devintensive.utils.Utils
+import ru.skillbranch.devintensive.ui.archive.ArchiveActivity
 
-class ChatAdapter(private val listener: (ChatItem) -> Unit) :
-    RecyclerView.Adapter<ChatAdapter.ChatItemViewHolder>() {
-
+class ChatAdapter(val listener: (ChatItem) -> Unit) : RecyclerView.Adapter<ChatAdapter.ChatItemViewHolder>() {
     companion object {
         private const val ARCHIVE_TYPE = 0
         private const val SINGLE_TYPE = 1
         private const val GROUP_TYPE = 2
     }
 
-    var items = listOf<ChatItem>()
+    var items: List<ChatItem> = listOf()
 
     override fun getItemViewType(position: Int): Int = when (items[position].chatType) {
         ChatType.ARCHIVE -> ARCHIVE_TYPE
@@ -35,16 +35,12 @@ class ChatAdapter(private val listener: (ChatItem) -> Unit) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
+
         return when (viewType) {
-            SINGLE_TYPE -> SingleViewHolder(
-                inflater.inflate(
-                    R.layout.item_chat_single,
-                    parent,
-                    false
-                )
-            )
+            ARCHIVE_TYPE -> ArchiveViewHolder(parent.context, inflater.inflate(R.layout.item_chat_archive, parent, false))
+            SINGLE_TYPE -> SingleViewHolder(inflater.inflate(R.layout.item_chat_single, parent, false))
             GROUP_TYPE -> GroupViewHolder(inflater.inflate(R.layout.item_chat_group, parent, false))
-            else -> ArchiveViewHolder(inflater.inflate(R.layout.item_chat_archive, parent, false))
+            else -> SingleViewHolder(inflater.inflate(R.layout.item_chat_single, parent, false))
         }
     }
 
@@ -55,142 +51,140 @@ class ChatAdapter(private val listener: (ChatItem) -> Unit) :
     }
 
     fun updateData(data: List<ChatItem>) {
-        val diffCallBack = object : DiffUtil.Callback() {
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                items[oldItemPosition].id == data[newItemPosition].id
-
-            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                items[oldItemPosition] == data[newItemPosition]
+        val diffCallback = object : DiffUtil.Callback() {
+            override fun areItemsTheSame(oldPos: Int, newPos: Int): Boolean = items[oldPos].id == data[newPos].id
 
             override fun getOldListSize(): Int = items.size
 
             override fun getNewListSize(): Int = data.size
+
+            override fun areContentsTheSame(oldPos: Int, newPos: Int): Boolean =
+                items[oldPos].hashCode() == data[newPos].hashCode()
         }
 
-        val diffResult = DiffUtil.calculateDiff(diffCallBack)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
 
         items = data
+
+        /* Передача текущего адаптера для обновления его с конкретной позиции */
         diffResult.dispatchUpdatesTo(this)
     }
 
-    abstract inner class ChatItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-        LayoutContainer {
+    abstract inner class ChatItemViewHolder(convertView: View) : RecyclerView.ViewHolder(convertView), LayoutContainer {
         override val containerView: View?
             get() = itemView
 
         abstract fun bind(item: ChatItem, listener: (ChatItem) -> Unit)
     }
 
-    inner class ArchiveViewHolder(itemView: View) : ChatItemViewHolder(itemView) {
-
-        override fun bind(item: ChatItem, listener: (ChatItem) -> Unit) {
-
-            tv_date_archive.apply {
-                visibility = if (item.lastMessageDate != null) View.VISIBLE else View.GONE
-                text = item.lastMessageDate
-            }
-            tv_counter_archive.apply {
-                visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
-                text = item.messageCount.toString()
-            }
-            tv_title_archive.text = item.title
-            tv_message_archive.text = item.shortDescription
-            itemView.setOnClickListener {
-                listener.invoke(item)
-            }
-            tv_message_author_archive.apply {
-                visibility = if (item.lastMessageDate != null) View.VISIBLE else View.GONE
-                text = "@${item.author}"
-            }
-        }
-    }
-
-    inner class SingleViewHolder(itemView: View) : ChatItemViewHolder(itemView),
+    inner class SingleViewHolder(convertView: View) : ChatItemViewHolder(convertView), LayoutContainer,
         ItemTouchViewHolder {
-
         override fun onItemSelected() {
-            itemView.setBackgroundColor(
-                Utils.getCurrntModeColor(
-                    itemView.context,
-                    R.attr.colorSelected
-                )
-            )
+            itemView.setBackgroundColor(Color.LTGRAY)
         }
 
         override fun onItemCleared() {
-            itemView.setBackgroundColor(
-                Utils.getCurrntModeColor(
-                    itemView.context,
-                    R.attr.colorItemView
-                )
-            )
+            itemView.setBackgroundColor(Color.WHITE)
         }
 
         override fun bind(item: ChatItem, listener: (ChatItem) -> Unit) {
             if (item.avatar == null) {
-                Glide.with(itemView).clear(iv_avatar_single)
+                Glide.with(itemView)
+                    .clear(iv_avatar_single)
                 iv_avatar_single.setInitials(item.initials)
             } else {
                 Glide.with(itemView)
                     .load(item.avatar)
                     .into(iv_avatar_single)
             }
+
             sv_indicator.visibility = if (item.isOnline) View.VISIBLE else View.GONE
-            tv_date_single.apply {
+
+            with(tv_date_single) {
                 visibility = if (item.lastMessageDate != null) View.VISIBLE else View.GONE
                 text = item.lastMessageDate
             }
-            tv_counter_single.apply {
+
+            with(tv_counter_single) {
                 visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
                 text = item.messageCount.toString()
             }
+
             tv_title_single.text = item.title
             tv_message_single.text = item.shortDescription
+
             itemView.setOnClickListener {
                 listener.invoke(item)
             }
         }
     }
 
-    inner class GroupViewHolder(itemView: View) : ChatItemViewHolder(itemView),
+    inner class GroupViewHolder(convertView: View) : ChatItemViewHolder(convertView), LayoutContainer,
         ItemTouchViewHolder {
-
         override fun onItemSelected() {
-            itemView.setBackgroundColor(
-                Utils.getCurrntModeColor(
-                    itemView.context,
-                    R.attr.colorSelected
-                )
-            )
+            itemView.setBackgroundColor(Color.LTGRAY)
         }
 
         override fun onItemCleared() {
-            itemView.setBackgroundColor(
-                Utils.getCurrntModeColor(
-                    itemView.context,
-                    R.attr.colorItemView
-                )
-            )
+            itemView.setBackgroundColor(Color.WHITE)
         }
 
         override fun bind(item: ChatItem, listener: (ChatItem) -> Unit) {
-            iv_avatar_group.setInitials(item.initials)
-            tv_date_group.apply {
+            iv_avatar_group.setInitials(if(item.initials != "") item.initials else "??")
+
+            with(tv_date_group) {
                 visibility = if (item.lastMessageDate != null) View.VISIBLE else View.GONE
                 text = item.lastMessageDate
             }
-            tv_counter_group.apply {
+
+            with(tv_counter_group) {
                 visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
                 text = item.messageCount.toString()
             }
+
             tv_title_group.text = item.title
             tv_message_group.text = item.shortDescription
-            tv_message_author.apply {
-                visibility = if (item.lastMessageDate != null) View.VISIBLE else View.GONE
+
+            with(tv_message_author) {
+                visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
                 text = "@${item.author}"
             }
+
             itemView.setOnClickListener {
                 listener.invoke(item)
+            }
+
+        }
+    }
+
+    inner class ArchiveViewHolder(ctx: Context, convertView: View) : ChatItemViewHolder(convertView), LayoutContainer{
+        val context = ctx
+
+        override fun bind(item: ChatItem, listener: (ChatItem) -> Unit) {
+            tv_title_archive.text = item.title
+            tv_message_archive.text = item.shortDescription
+
+            with(tv_date_archive) {
+                visibility = if (item.lastMessageDate != null) View.VISIBLE else View.GONE
+                text = item.lastMessageDate
+            }
+
+            with(tv_counter_archive) {
+                visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
+                text = item.messageCount.toString()
+            }
+
+            tv_title_archive.text = item.title
+            tv_message_archive.text = item.shortDescription
+
+            with(tv_message_author_archive) {
+                visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
+                text = "@${item.author}"
+            }
+
+            itemView.setOnClickListener {
+                val intent = Intent(context, ArchiveActivity::class.java)
+                context.startActivity(intent)
             }
         }
     }
